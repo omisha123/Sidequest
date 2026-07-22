@@ -1,184 +1,159 @@
-let allWords = [];
-let currentWords = [];
-let turn = 1;
-
-// UI Elements
-const fileInput = document.getElementById("word-file");
-const fileSection = document.getElementById("file-section");
-const gameSection = document.getElementById("game-section");
-const turnNum = document.getElementById("turn-num");
-const wordsLeft = document.getElementById("words-left");
-const suggestedWord = document.getElementById("suggested-word");
-const typedWordInput = document.getElementById("typed-word");
-const submitBtn = document.getElementById("submit-btn");
-const resetBtn = document.getElementById("reset-btn");
-const tiles = document.querySelectorAll(".tile");
-
-// Load words.txt file
-fileInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (evt) => {
-    const text = evt.target.result;
-    allWords = text
-      .split(/\r?\n/)
-      .map(w => w.trim().toLowerCase())
-      .filter(w => w.length === 5);
-
-    if (allWords.length === 0) {
-      alert("No valid 5-letter words found in file!");
-      return;
-    }
-
-    fileSection.classList.add("hidden");
-    gameSection.classList.remove("hidden");
-    initGame();
-  };
-  reader.readAsText(file);
+let allWords=[];
+let currentWords=[];
+let turn=1;
+const turnNum=document.getElementById("turn-num");
+const wordsLeft=document.getElementById("words-left");
+const suggestedWord=document.getElementById("suggested-word");
+const typedWord=document.getElementById("typed-word");
+const submitBtn=document.getElementById("submit-btn");
+const resetBtn=document.getElementById("reset-btn");
+const letters=document.querySelectorAll(".letter");
+fetch("words.txt")
+.then(response=>response.text())
+.then(text=>{
+allWords=text.split(/\r?\n/)
+.map(w=>w.trim().toLowerCase())
+.filter(w=>/^[a-z]{5}$/.test(w));
+startGame();
+})
+.catch(()=>{
+suggestedWord.textContent="ERROR";
 });
-
-// Tile click toggles state (0 -> 1 -> 2 -> 0)
-tiles.forEach(tile => {
-  tile.addEventListener("click", () => {
-    let state = parseInt(tile.getAttribute("data-state"));
-    state = (state + 1) % 3;
-    tile.setAttribute("data-state", state);
-    tile.textContent = state;
-
-    tile.className = "tile " + (state === 2 ? "green" : state === 1 ? "yellow" : "grey");
-  });
+function shakeLetters(){
+for(let i=0;i<letters.length;i++)
+letters[i].classList.add("shake");
+setTimeout(()=>{
+for(let i=0;i<letters.length;i++)
+letters[i].classList.remove("shake");
+},350);
+}
+function winAnimation(){
+for(let i=0;i<letters.length;i++)
+letters[i].classList.add("win");
+suggestedWord.textContent="SOLVED!";
+setTimeout(()=>{
+for(let i=0;i<letters.length;i++)
+letters[i].classList.remove("win");
+startGame();
+},1000);
+}
+function startGame(){
+currentWords=[...allWords];
+turn=1;
+nextTurn();
+}
+function nextTurn(){
+if(currentWords.length===0){
+suggestedWord.textContent="-----";
+wordsLeft.textContent="0";
+shakeLetters();
+return;
+}
+turnNum.textContent=turn;
+wordsLeft.textContent=currentWords.length;
+let guess=pickWord(currentWords);
+suggestedWord.textContent=guess.toUpperCase();
+typedWord.value=guess;
+updateLetters();
+}
+typedWord.addEventListener("input",updateLetters);
+function updateLetters(){
+let word=typedWord.value.toUpperCase();
+for(let i=0;i<5;i++){
+letters[i].textContent=word[i]||"";
+letters[i].dataset.state=0;
+letters[i].className="letter grey";
+}
+}
+for(let i=0;i<letters.length;i++){
+letters[i].addEventListener("click",()=>{
+let state=Number(letters[i].dataset.state);
+state=(state+1)%3;
+letters[i].dataset.state=state;
+if(state===0)
+letters[i].className="letter grey";
+else if(state===1)
+letters[i].className="letter yellow";
+else
+letters[i].className="letter green";
 });
-
-function initGame() {
-  currentWords = [...allWords];
-  turn = 1;
-  nextTurn();
 }
-
-function nextTurn() {
-  if (currentWords.length === 0) {
-    alert("No words left! Double-check your feedback entries.");
-    return;
-  }
-
-  turnNum.textContent = turn;
-  wordsLeft.textContent = currentWords.length;
-
-  const guess = pickWord(currentWords, turn === 1);
-  suggestedWord.textContent = guess.toUpperCase();
-  typedWordInput.value = guess;
-  resetTiles();
+function checkWord(word,guess,fb){
+let result=["0","0","0","0","0"];
+let used=[false,false,false,false,false];
+for(let i=0;i<5;i++){
+if(word[i]===guess[i]){
+result[i]="2";
+used[i]=true;
 }
-
-function resetTiles() {
-  tiles.forEach(tile => {
-    tile.setAttribute("data-state", "0");
-    tile.textContent = "0";
-    tile.className = "tile grey";
-  });
 }
-
-function checkWord(w, g, fb) {
-  for (let i = 0; i < 5; i++) {
-    if (fb[i] === '2' && w[i] !== g[i]) return false;
-    if (fb[i] === '1' && w[i] === g[i]) return false;
-  }
-
-  let need = Array(26).fill(0);
-  let bad = Array(26).fill(false);
-
-  for (let i = 0; i < 5; i++) {
-    let idx = g.charCodeAt(i) - 97;
-    if (fb[i] === '0') bad[idx] = true;
-    else need[idx]++;
-  }
-
-  let count = Array(26).fill(0);
-  for (let i = 0; i < 5; i++) {
-    count[w.charCodeAt(i) - 97]++;
-  }
-
-  for (let i = 0; i < 5; i++) {
-    let idx = g.charCodeAt(i) - 97;
-    if (count[idx] < need[idx]) return false;
-    if (bad[idx] && count[idx] !== need[idx]) return false;
-  }
-
-  return true;
+for(let i=0;i<5;i++){
+if(result[i]==="2")
+continue;
+for(let j=0;j<5;j++){
+if(!used[j]&&guess[i]===word[j]){
+result[i]="1";
+used[j]=true;
+break;
 }
-
-function pickWord(list, first) {
-  let freq = Array(26).fill(0);
-
-  // 1. Count letter frequencies across remaining word list
-  for (let w of list) {
-    let used = Array(26).fill(false);
-    for (let i = 0; i < 5; i++) used[w.charCodeAt(i) - 97] = true;
-    for (let i = 0; i < 26; i++) if (used[i]) freq[i]++;
-  }
-
-  // 2. Score every word based on letter frequency
-  let maxScore = 0;
-  let scores = [];
-
-  for (let w of list) {
-    let used = Array(26).fill(false);
-    let s = 0;
-    for (let i = 0; i < 5; i++) {
-      let idx = w.charCodeAt(i) - 97;
-      if (!used[idx]) {
-        used[idx] = true;
-        s += freq[idx];
-      }
-    }
-    scores.push(s);
-    if (s > maxScore) maxScore = s;
-  }
-
-  // 3. Turn 1: Pick a random word from top 15% scoring candidates
-  if (first && maxScore > 0) {
-    let top = [];
-    for (let i = 0; i < list.length; i++) {
-      if (scores[i] >= maxScore * 0.85) {
-        top.push(list[i]);
-      }
-    }
-
-    if (top.length > 0) {
-      let randomIndex = Math.floor(Math.random() * top.length);
-      return top[randomIndex];
-    }
-  }
-
-  // 4. Turns 2+: Pick the absolute top scoring word
-  for (let i = 0; i < list.length; i++) {
-    if (scores[i] === maxScore) return list[i];
-  }
-
-  return list[0];
 }
-
-submitBtn.addEventListener("click", () => {
-  const typed = typedWordInput.value.toLowerCase().trim();
-  if (typed.length !== 5) {
-    alert("Typed word must be 5 letters long!");
-    return;
-  }
-
-  let fb = "";
-  tiles.forEach(tile => fb += tile.getAttribute("data-state"));
-
-  if (fb === "22222") {
-    alert(`Solved in ${turn} tries! 🎉`);
-    initGame();
-    return;
-  }
-
-  currentWords = currentWords.filter(w => checkWord(w, typed, fb));
-  turn++;
-  nextTurn();
+}
+return result.join("")===fb;
+}
+function pickWord(list){
+if(turn===1){
+let startWords=list.filter(word=>{
+return new Set(word).size===5;
 });
-
-resetBtn.addEventListener("click", initGame);
+return startWords[Math.floor(Math.random()*startWords.length)];
+}
+let freq=new Array(26).fill(0);
+for(let word of list){
+let used=new Array(26).fill(false);
+for(let j=0;j<5;j++)
+used[word.charCodeAt(j)-97]=true;
+for(let j=0;j<26;j++)
+if(used[j])
+freq[j]++;
+}
+let bestWord=list[0];
+let bestScore=0;
+for(let word of list){
+let used=new Array(26).fill(false);
+let score=0;
+for(let j=0;j<5;j++){
+let x=word.charCodeAt(j)-97;
+if(!used[x]){
+used[x]=true;
+score+=freq[x];
+}
+}
+if(score>bestScore){
+bestScore=score;
+bestWord=word;
+}
+}
+return bestWord;
+}
+submitBtn.addEventListener("click",()=>{
+let guess=typedWord.value.toLowerCase().trim();
+if(guess.length!==5){
+shakeLetters();
+return;
+}
+let fb="";
+for(let i=0;i<letters.length;i++)
+fb+=letters[i].dataset.state;
+if(fb==="22222"){
+winAnimation();
+return;
+}
+currentWords=currentWords.filter(word=>{
+return checkWord(word,guess,fb);
+});
+turn++;
+nextTurn();
+});
+resetBtn.addEventListener("click",()=>{
+startGame();
+});
