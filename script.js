@@ -141,6 +141,11 @@ if(guess.length!==5){
 shakeLetters();
 return;
 }
+if(!allWords.includes(guess)){
+suggestedWord.textContent="INVALID WORD";
+shakeLetters();
+return;
+}
 let fb="";
 for(let i=0;i<letters.length;i++)
 fb+=letters[i].dataset.state;
