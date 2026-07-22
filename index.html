@@ -1,56 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wordle Assistant</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordle Solver</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div class="container">
-    <h1>Wordle Solver</h1>
-
-    <!-- File Input Section -->
-    <div id="file-section" class="card">
-      <p>Upload your <code>words.txt</code> file to begin:</p>
-      <input type="file" id="word-file" accept=".txt">
-    </div>
-
-    <!-- Solver Main Section -->
-    <div id="game-section" class="card hidden">
-      <div class="status-bar">
-        <span>Turn <b id="turn-num">1</b>/6</span>
-        <span><b id="words-left">0</b> words left</span>
-      </div>
-
-      <div class="suggestion-box">
-        <p>Suggested Word:</p>
-        <h2 id="suggested-word">-----</h2>
-      </div>
-
-      <div class="input-group">
-        <label>Word you typed:</label>
-        <input type="text" id="typed-word" maxlength="5" placeholder="e.g. slate">
-      </div>
-
-      <div class="input-group">
-        <label>Feedback (click boxes or type 0/1/2):</label>
-        <div class="tile-row">
-          <button class="tile grey" data-state="0">0</button>
-          <button class="tile grey" data-state="0">0</button>
-          <button class="tile grey" data-state="0">0</button>
-          <button class="tile grey" data-state="0">0</button>
-          <button class="tile grey" data-state="0">0</button>
-        </div>
-        <small class="legend">0 = Grey | 1 = Yellow | 2 = Green</small>
-      </div>
-
-      <button id="submit-btn" class="primary-btn">Submit Feedback</button>
-      <button id="reset-btn" class="secondary-btn">Reset Game</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+<div class="container">
+<h1>Wordle Solver</h1>
+<div id="game-section" class="card">
+<div class="status-bar">
+<span>Turn <b id="turn-num">1</b>/6</span>
+<span><b id="words-left">0</b> words left</span>
+</div>
+<div class="suggestion-box">
+<p>Suggested Word</p>
+<h2 id="suggested-word">-----</h2>
+</div>
+<div class="input-group">
+<label>Word You Played</label>
+<input type="text" id="typed-word" maxlength="5" autocomplete="off">
+</div>
+<div class="input-group">
+<label>Click letters to change colour</label>
+<div class="tile-row">
+<button type="button" class="letter grey" data-state="0"></button>
+<button type="button" class="letter grey" data-state="0"></button>
+<button type="button" class="letter grey" data-state="0"></button>
+<button type="button" class="letter grey" data-state="0"></button>
+<button type="button" class="letter grey" data-state="0"></button>
+</div>
+</div>
+<button id="submit-btn" class="primary-btn">Submit</button>
+<button id="reset-btn" class="secondary-btn">Reset</button>
+</div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
