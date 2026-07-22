@@ -1,130 +1,166 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
 }
 
-body {
-  background-color: #121213;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
+body{
+background:#121213;
+color:#fff;
+display:flex;
+justify-content:center;
+padding:40px 20px;
 }
 
-.container {
-  max-width: 420px;
-  width: 100%;
+.container{
+width:100%;
+max-width:420px;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
+h1{
+text-align:center;
+margin-bottom:20px;
 }
 
-.card {
-  background-color: #1e1e1f;
-  padding: 24px;
-  border-radius: 8px;
-  border: 1px solid #3a3a3c;
+.card{
+background:#1e1e1f;
+padding:24px;
+border:1px solid #3a3a3c;
+border-radius:8px;
 }
 
-.hidden {
-  display: none;
+.hidden{
+display:none;
 }
 
-.status-bar {
-  display: flex;
-  justify-content: space-between;
-  color: #818384;
-  font-size: 14px;
-  margin-bottom: 16px;
+.status-bar{
+display:flex;
+justify-content:space-between;
+margin-bottom:16px;
+font-size:14px;
+color:#818384;
 }
 
-.suggestion-box {
-  text-align: center;
-  background-color: #272729;
-  padding: 16px;
-  border-radius: 6px;
-  margin-bottom: 20px;
+.suggestion-box{
+background:#272729;
+border-radius:6px;
+padding:16px;
+text-align:center;
+margin-bottom:20px;
 }
 
-.suggestion-box h2 {
-  font-size: 32px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #538d4e;
-  margin-top: 4px;
+.suggestion-box h2{
+margin-top:6px;
+font-size:32px;
+letter-spacing:4px;
+color:#538d4e;
 }
 
-.input-group {
-  margin-bottom: 20px;
+.input-group{
+margin-bottom:20px;
 }
 
-.input-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 8px;
-  color: #d7dadc;
+.input-group label{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+color:#d7dadc;
 }
 
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 18px;
-  text-transform: uppercase;
-  background: #121213;
-  border: 1px solid #3a3a3c;
-  color: #fff;
-  border-radius: 4px;
-  text-align: center;
-  letter-spacing: 2px;
+input[type="text"]{
+width:100%;
+padding:10px;
+font-size:18px;
+text-align:center;
+text-transform:uppercase;
+letter-spacing:2px;
+background:#121213;
+color:#fff;
+border:1px solid #3a3a3c;
+border-radius:4px;
 }
 
-.tile-row {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+.tile-row{
+display:flex;
+justify-content:center;
+gap:8px;
 }
 
-.tile {
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #fff;
-  transition: background 0.2s;
+.letter{
+width:48px;
+height:48px;
+border:none;
+border-radius:4px;
+font-size:22px;
+font-weight:bold;
+color:#fff;
+cursor:pointer;
+transition:.2s;
+text-transform:uppercase;
 }
 
-.tile.grey { background-color: #3a3a3c; }
-.tile.yellow { background-color: #b59f3b; }
-.tile.green { background-color: #538d4e; }
-
-.legend {
-  display: block;
-  text-align: center;
-  color: #818384;
-  margin-top: 6px;
-  font-size: 12px;
+.letter.grey{
+background:#3a3a3c;
 }
 
-.primary-btn, .secondary-btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 8px;
+.letter.yellow{
+background:#b59f3b;
 }
 
-.primary-btn { background-color: #538d4e; color: #fff; }
-.secondary-btn { background-color: #3a3a3c; color: #fff; }
+.letter.green{
+background:#538d4e;
+}
 
-.primary-btn:hover { background-color: #467742; }
-.secondary-btn:hover { background-color: #4a4a4c; }
+.primary-btn,
+.secondary-btn{
+width:100%;
+padding:12px;
+font-size:16px;
+font-weight:bold;
+border:none;
+border-radius:4px;
+cursor:pointer;
+margin-bottom:8px;
+}
+
+.primary-btn{
+background:#538d4e;
+color:#fff;
+}
+
+.secondary-btn{
+background:#3a3a3c;
+color:#fff;
+}
+
+.primary-btn:hover{
+background:#467742;
+}
+
+.secondary-btn:hover{
+background:#4a4a4c;
+}
+
+.shake{
+animation:shake .35s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0);}
+20%{transform:translateX(-6px);}
+40%{transform:translateX(6px);}
+60%{transform:translateX(-6px);}
+80%{transform:translateX(6px);}
+100%{transform:translateX(0);}
+}
+
+.win{
+animation:pop .4s;
+}
+
+@keyframes pop{
+0%{transform:scale(1);}
+50%{transform:scale(1.15);}
+100%{transform:scale(1);}
+}
